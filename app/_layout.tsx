@@ -9,6 +9,8 @@ import DefaultTheme from "@/components/DefaultTheme"
 
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 
+import { Montserrat_700Bold, Montserrat_400Regular } from "@expo-google-fonts/montserrat"
+
 export {
 	// Catch any errors thrown by the Layout component.
 	ErrorBoundary,
@@ -25,6 +27,8 @@ export default function RootLayout() {
 	const [loaded, error] = useFonts({
 		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
 		...FontAwesome.font,
+		Montserrat_400Regular,
+		Montserrat_700Bold
 	});
 
 	// Expo Router uses Error Boundaries to catch errors in the navigation tree.
