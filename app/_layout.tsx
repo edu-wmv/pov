@@ -14,6 +14,10 @@ export {
 	ErrorBoundary,
 } from "expo-router";
 
+export const unstable_settings = {
+	initialRouteName: "home",
+}
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
