@@ -9,7 +9,7 @@ import DefaultTheme from "@/components/DefaultTheme"
 
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 
-import { Montserrat_700Bold, Montserrat_400Regular } from "@expo-google-fonts/montserrat"
+import { Montserrat_400Regular, Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from "@expo-google-fonts/montserrat"
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -28,6 +28,8 @@ export default function RootLayout() {
 		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
 		...FontAwesome.font,
 		Montserrat_400Regular,
+		Montserrat_500Medium,
+		Montserrat_600SemiBold,
 		Montserrat_700Bold
 	});
 
@@ -59,8 +61,9 @@ function RootLayoutNav() {
 
 	return (
 		<ThemeProvider value={colorScheme}>
-			<Stack>
+			<Stack initialRouteName="/login">
 				<Stack.Screen name="login" options={{ ...defaultOptions }} />
+				<Stack.Screen name="main" options={{ ...defaultOptions }} />
 			</Stack>
 		</ThemeProvider>
 	);
