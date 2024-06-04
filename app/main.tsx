@@ -1,12 +1,9 @@
 import React from "react";
-import { View } from "react-native";
-import { Text } from "@/components/Themed";
+import MainScreen from "@/components/MainScreen";
 
 const Main = () => {
 	return (
-    <View>
-      <Text>Main</Text>
-    </View>
+      <MainScreen />
 	);
 };
 

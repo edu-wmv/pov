@@ -1,14 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { ProView, Text } from "./Themed";
-import { ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, View, Keyboard, Animated, type EmitterSubscription } from "react-native";
+import { ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, View, Keyboard, Animated, type EmitterSubscription, Button } from "react-native";
 import Logo from "@/assets/svg/title.svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar"
 import { AntDesign } from "@expo/vector-icons";
 import LoginForm from "./LoginForm";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-export default function LoginScreen() {
+export default function MainScreen() {
   const insets = useSafeAreaInsets();
   const infoOpacity = useRef(new Animated.Value(1)).current;
 
@@ -47,6 +49,7 @@ export default function LoginScreen() {
       style={{ flex: 1 }}
       keyboardVerticalOffset={-insets.top}
     >
+    <GestureHandlerRootView>
     <ImageBackground 
       source={require('@/assets/images/background.png')} 
       style={{ width: '100%', height: '100%' }} 
@@ -64,32 +67,15 @@ export default function LoginScreen() {
           <Text style={styles.welcome}>Welcome</Text>
           <Text style={styles.description}>Create events, take shots, share your pov</Text>
         </Animated.View>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>SHOW YOUR POV</Text>
-          <View style={{ width: "100%"}}>
-            <LoginForm />
-          </View>
-          <View style={styles.separatorContainer}>
-            <View style={styles.separator} />
-            <Text style={styles.separatorText}>or</Text>
-            <View style={styles.separator} />
-          </View>
-          <View style={styles.socialContainer}>
-            <TouchableOpacity style={styles.socialButton} activeOpacity={0.65}>
-              <AntDesign name="google" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} activeOpacity={0.65}>
-              <AntDesign name="apple1" size={24} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.helpContainer}>
-            <Text style={styles.helpText}>Don't have an account? Sign up</Text>
-            <Text style={styles.helpText}>Forgot password?</Text>
-          </View>
-        </View>
+
+        <BottomSheetModalProvider>
+        
+        
+      </BottomSheetModalProvider>
       </ProView>
       <StatusBar style="light"backgroundColor="transparent" />
     </ImageBackground>
+    </GestureHandlerRootView>
     </KeyboardAvoidingView>
   );
 }
