@@ -1,36 +1,34 @@
 {
-  "expo": {
-    "name": "pov",
-    "slug": "pov",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#343434"
-    },
-    "ios": {
-      "supportsTablet": false
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#343434"
-      }
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
-  }
+	"expo": {
+		"name": "pov",
+		"slug": "pov",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/images/icon.png",
+		"scheme": "myapp",
+		"userInterfaceStyle": "automatic",
+		"splash": {
+			"image": "./assets/images/splash.png",
+			"resizeMode": "cover",
+			"backgroundColor": "#343434"
+		},
+		"ios": {
+			"supportsTablet": false
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/adaptive-icon.png",
+				"backgroundColor": "#343434"
+			}
+		},
+		"web": {
+			"bundler": "metro",
+			"output": "static",
+			"favicon": "./assets/images/favicon.png"
+		},
+		"plugins": ["expo-router"],
+		"experiments": {
+			"typedRoutes": true
+		}
+	}
 }

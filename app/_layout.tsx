@@ -5,11 +5,16 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import DefaultTheme from "@/components/DefaultTheme"
+import DefaultTheme from "@/components/DefaultTheme";
 
 import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 
-import { Montserrat_400Regular, Montserrat_500Medium, Montserrat_600SemiBold, Montserrat_700Bold } from "@expo-google-fonts/montserrat"
+import {
+	Montserrat_400Regular,
+	Montserrat_500Medium,
+	Montserrat_600SemiBold,
+	Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -18,7 +23,7 @@ export {
 
 export const unstable_settings = {
 	initialRouteName: "main",
-}
+};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,7 +35,7 @@ export default function RootLayout() {
 		Montserrat_400Regular,
 		Montserrat_500Medium,
 		Montserrat_600SemiBold,
-		Montserrat_700Bold
+		Montserrat_700Bold,
 	});
 
 	// Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -40,7 +45,7 @@ export default function RootLayout() {
 
 	useEffect(() => {
 		if (loaded) {
-      // new Promise(resolve => setTimeout(resolve, 3000))
+			// new Promise(resolve => setTimeout(resolve, 3000))
 			SplashScreen.hideAsync();
 		}
 	}, [loaded]);

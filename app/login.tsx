@@ -2,9 +2,7 @@ import React from "react";
 import LoginScreen from "@/components/LoginScreen";
 
 const Login = () => {
-	return (
-    <LoginScreen />
-	);
+	return <LoginScreen />;
 };
 
 export default Login;
