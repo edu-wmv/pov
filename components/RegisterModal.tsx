@@ -1,15 +1,15 @@
 import React from "react";
 import { Text } from "./Themed";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
-import LoginForm from "./LoginForm";
 import { AntDesign } from "@expo/vector-icons";
+import RegisterForm from "./RegisterForm";
 
-export default function LoginModal() {
+export default function RegisterModal() {
 	return (
 		<View style={styles.modalContainer}>
-			<Text style={styles.modalTitle}>SHOW YOUR POV</Text>
+			<Text style={styles.modalTitle}>CREATE YOUR POV</Text>
 			<View style={{ width: "100%" }}>
-				<LoginForm />
+				<RegisterForm />
 			</View>
 			<View style={styles.separatorContainer}>
 				<View style={styles.separator} />
@@ -23,10 +23,6 @@ export default function LoginModal() {
 				<TouchableOpacity style={styles.socialButton} activeOpacity={0.65}>
 					<AntDesign name="apple1" size={24} />
 				</TouchableOpacity>
-			</View>
-			<View style={styles.helpContainer}>
-				<Text style={styles.helpText}>Don't have an account? Sign up</Text>
-				<Text style={styles.helpText}>Forgot password?</Text>
 			</View>
 		</View>
 	);
@@ -65,7 +61,7 @@ const styles = StyleSheet.create({
 	socialContainer: {
 		flexDirection: "row",
 		columnGap: 15,
-		marginBottom: 5,
+		marginBottom: 30,
 	},
 	socialButton: {
 		alignItems: "center",
@@ -74,16 +70,5 @@ const styles = StyleSheet.create({
 		borderColor: "#ABABAB",
 		borderWidth: 1,
 		borderRadius: 10,
-	},
-	helpContainer: {
-		alignItems: "center",
-		marginTop: 35,
-		marginBottom: 10,
-		rowGap: 10,
-	},
-	helpText: {
-		color: "#8D8D8D",
-		fontFamily: "Montserrat_500Medium",
-		fontSize: 12,
-	},
+	}
 });

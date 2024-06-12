@@ -10,49 +10,72 @@ import {
 	Keyboard,
 	Animated,
 	type EmitterSubscription,
-	Button,
 } from "react-native";
 import Logo from "@/assets/svg/title.svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
-import { AntDesign } from "@expo/vector-icons";
-import LoginForm from "./LoginForm";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import {
+	BottomSheetModal,
+	BottomSheetModalProvider,
+	BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LoginModal from "./LoginModal";
+import RegisterModal from "./RegisterModal";
 
 export default function MainScreen() {
 	const insets = useSafeAreaInsets();
-	const infoOpacity = useRef(new Animated.Value(1)).current;
+	const infoTop = useRef(new Animated.Value(0)).current;
+	const loginSnapPoints = useMemo(() => ["25%", "60%"], []);
+  const registerSnapPoints = useMemo(() => ["25%", "70%"], []);
+	const LoginModalRef = useRef<BottomSheetModal>(null);
+	const RegisterModalRef = useRef<BottomSheetModal>(null);
+
+	const infoTopPercentage = infoTop.interpolate({
+		inputRange: [0, 1],
+		outputRange: ["45%", "15%"],
+	});
+
+  const handleInfoTop15 = useCallback(() => {
+    Animated.timing(infoTop, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [infoTop]);
+
+	const handleInfoTop45 = useCallback(() => {
+		Animated.timing(infoTop, {
+			toValue: 0,
+			duration: 300,
+			useNativeDriver: false,
+		}).start();
+	}, [infoTop]);
+
+	const handleLoginModal = useCallback(() => {
+		handleInfoTop15();
+		LoginModalRef.current?.present();
+	}, [handleInfoTop15]);
+
+	const handleRegisterModal = useCallback(() => {
+		handleInfoTop15();
+		RegisterModalRef.current?.present();
+	}, [handleInfoTop15]);
 
 	useEffect(() => {
 		const keyboardShowListener: EmitterSubscription = Keyboard.addListener(
-			"keyboardDidShow",
-			() => {
-				Animated.timing(infoOpacity, {
-					toValue: 0,
-					duration: 300,
-					useNativeDriver: true,
-				}).start();
-			},
+			"keyboardDidShow", handleInfoTop15,
 		);
 		const keyboardHideListener: EmitterSubscription = Keyboard.addListener(
-			"keyboardDidHide",
-			() => {
-				Animated.timing(infoOpacity, {
-					toValue: 1,
-					duration: 300,
-					useNativeDriver: true,
-				}).start();
-			},
+			"keyboardDidHide", handleInfoTop15,
 		);
 
 		return () => {
 			keyboardShowListener.remove();
 			keyboardHideListener.remove();
 		};
-	}, [infoOpacity]);
+	}, [handleInfoTop15]);
 
 	Platform.OS === "android" &&
 		useEffect(() => {
@@ -72,22 +95,77 @@ export default function MainScreen() {
 					style={{ width: "100%", height: "100%" }}
 					resizeMode="cover"
 				>
-					<ProView
-						style={[styles.container, { backgroundColor: "transparent" }]}
-					>
-						<View style={[styles.logoContainer, { top: insets.top + 20 }]}>
+					<ProView style={[styles.container, { marginTop: insets.top + 20 }]}>
+						<View style={styles.logoContainer}>
 							<Logo width={90 * 0.9} height={35 * 0.9} />
 						</View>
-						<Animated.View style={[styles.mainInfo, { opacity: infoOpacity }]}>
+						<Animated.View
+							style={[styles.mainInfo, { top: infoTopPercentage }]}
+						>
 							<Text style={styles.welcome}>Welcome</Text>
 							<Text style={styles.description}>
 								Create events, take shots, share your pov
 							</Text>
 						</Animated.View>
 
+						<View style={styles.buttonContainer}>
+							<TouchableOpacity
+								onPress={handleLoginModal}
+								style={styles.loginButton}
+							>
+								<Text style={styles.loginButtonText}>Login</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={handleRegisterModal}
+								style={styles.registerButton}
+							>
+								<Text style={styles.registerButtonText}>Register</Text>
+							</TouchableOpacity>
+						</View>
+
 						<BottomSheetModalProvider>
-              <LoginModal />
-            </BottomSheetModalProvider>
+							{/* LOGIN MODAL */}
+							<BottomSheetModal
+								ref={LoginModalRef}
+								index={1}
+								snapPoints={loginSnapPoints}
+								onDismiss={handleInfoTop45}
+								enableDismissOnClose
+								enableDynamicSizing
+								handleIndicatorStyle={{
+									backgroundColor: "#D9D9D9",
+									width: "25%",
+									height: 5,
+								}}
+								handleStyle={{ transform: [{ translateY: -30 }] }}
+								backgroundStyle={{ backgroundColor: "#DEDEDE" }}
+							>
+								<BottomSheetView>
+									<LoginModal />
+								</BottomSheetView>
+							</BottomSheetModal>
+
+							{/* REGISTER MODAL */}
+							<BottomSheetModal
+								ref={RegisterModalRef}
+								index={1}
+								snapPoints={registerSnapPoints}
+								onDismiss={handleInfoTop45}
+								enableDismissOnClose
+								enableDynamicSizing
+								handleIndicatorStyle={{
+									backgroundColor: "#D9D9D9",
+									width: "25%",
+									height: 5,
+								}}
+								handleStyle={{ transform: [{ translateY: -30 }] }}
+								backgroundStyle={{ backgroundColor: "#DEDEDE" }}
+							>
+								<BottomSheetView>
+									<RegisterModal />
+								</BottomSheetView>
+							</BottomSheetModal>
+						</BottomSheetModalProvider>
 					</ProView>
 					<StatusBar style="light" backgroundColor="transparent" />
 				</ImageBackground>
@@ -100,13 +178,17 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "flex-end",
+		justifyContent: "center",
+		backgroundColor: "transparent",
 	},
 	logoContainer: {
 		position: "absolute",
+		top: 0,
 	},
 	mainInfo: {
 		alignItems: "center",
+		position: "absolute",
+		top: 200,
 	},
 	welcome: {
 		fontFamily: "Montserrat_700Bold",
@@ -116,59 +198,40 @@ const styles = StyleSheet.create({
 		fontFamily: "Montserrat_400Regular",
 		fontSize: 14,
 	},
-	modalContainer: {
+	buttonContainer: {
+		position: "absolute",
+		bottom: 0,
+		alignItems: "center",
+		marginBottom: 40,
 		width: "100%",
+		paddingHorizontal: 30,
+	},
+	loginButton: {
 		backgroundColor: "#DEDEDE",
-		borderTopLeftRadius: 30,
-		borderTopRightRadius: 30,
-		padding: 20,
-		alignItems: "center",
-		marginTop: 70,
-	},
-	modalTitle: {
-		fontFamily: "Montserrat_600SemiBold",
-		fontSize: 14,
-		color: "#303030",
-		marginBottom: 35,
-	},
-	separatorContainer: {
-		marginVertical: 25,
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	separator: {
-		backgroundColor: "#383838",
-		height: 1,
-		width: "45%",
-	},
-	separatorText: {
-		fontFamily: "Montserrat_700Bold",
-		fontSize: 14,
-		color: "#383838",
-		marginHorizontal: 10,
-	},
-	socialContainer: {
-		flexDirection: "row",
-		columnGap: 15,
-		marginBottom: 5,
-	},
-	socialButton: {
-		alignItems: "center",
-		width: 150,
-		paddingVertical: 12,
-		borderColor: "#ABABAB",
-		borderWidth: 1,
+		paddingVertical: 15,
+		paddingHorizontal: 20,
 		borderRadius: 10,
-	},
-	helpContainer: {
+		marginTop: 20,
+		width: "100%",
 		alignItems: "center",
-		marginTop: 35,
-		marginBottom: 10,
-		rowGap: 10,
 	},
-	helpText: {
-		color: "#8D8D8D",
-		fontFamily: "Montserrat_500Medium",
-		fontSize: 12,
+	loginButtonText: {
+		fontFamily: "Montserrat_700Bold",
+		fontSize: 16,
+		color: "#303030",
+	},
+	registerButton: {
+		backgroundColor: "#303030",
+		paddingVertical: 15,
+		paddingHorizontal: 20,
+		borderRadius: 10,
+		marginTop: 10,
+		width: "100%",
+		alignItems: "center",
+	},
+	registerButtonText: {
+		fontFamily: "Montserrat_700Bold",
+		fontSize: 16,
+		color: "#DEDEDE",
 	},
 });

@@ -5,7 +5,7 @@
 
 import {
 	Text as DefaultText,
-	View as DefaultView,
+	type View as DefaultView,
 	Platform,
 } from "react-native";
 import { SafeAreaView as DefaultSafeAreaView } from "react-native-safe-area-context";
@@ -48,9 +48,13 @@ export function ProView(props: ViewProps) {
 		"background",
 	);
 
-	return Platform.OS === "android" ? (
+	// return Platform.OS === "android" ? (
+	// 	<DefaultSafeAreaView style={[{ backgroundColor }, style]} {...otherProps} />
+	// ) : (
+	// 	<DefaultView style={[{ backgroundColor }, style]} {...otherProps} />
+	// );
+
+	return (
 		<DefaultSafeAreaView style={[{ backgroundColor }, style]} {...otherProps} />
-	) : (
-		<DefaultView style={[{ backgroundColor }, style]} {...otherProps} />
 	);
 }

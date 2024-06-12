@@ -1,4 +1,6 @@
 import {
+	ActivityIndicator,
+	Alert,
 	StyleSheet,
 	Text,
 	TextInput,
@@ -8,16 +10,18 @@ import {
 import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, type FieldErrors, useForm } from "react-hook-form";
+import Host from "@/constants/Host";
 
 const schema = z.object({
 	email: z.string().email({ message: "Invalid email" }),
 	password: z
 		.string()
-		.min(8, { message: "Password must be at least 8 characters long" }),
+		.min(8, { message: "Invalid password" }),
 });
 
 const LoginForm = () => {
+	const [loading, setLoading] = React.useState(false);
 	const {
 		control,
 		handleSubmit,
@@ -26,7 +30,51 @@ const LoginForm = () => {
 		resolver: zodResolver(schema),
 	});
 
-	const onSubmit = (data: any) => console.log(JSON.stringify(data));
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const onSubmit = async (data: any) => {
+		console.log(data);
+		setLoading(true);
+
+		try {
+			const response = await fetch(`${Host.AUTH}/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			console.log(await response.json());
+
+			switch (response.status) {
+				case 200:
+					Alert.alert("Logged in", "Welcome back");
+					break;
+				case 401:
+					Alert.alert("Invalid credentials", "Please try again");
+					break;
+				case 404:
+					Alert.alert("Account not found", "Please sign up");
+					break;
+				default:
+					Alert.alert("Failed to log in", "Please try again later");
+					break;
+			}
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const onError = (errors: FieldErrors) => {
+		if (Object.keys(errors).length > 0) {
+			Alert.alert(
+				"Invalid form data",
+				Object.values(errors).map((error) => error?.message).join("\n")
+			)
+		}
+	};
 
 	return (
 		<View style={{}}>
@@ -35,18 +83,20 @@ const LoginForm = () => {
 				render={({ field: { onChange, onBlur, value } }) => (
 					<View style={styles.inputContainer}>
 						<TextInput
-							style={styles.textInput}
+							style={{
+								...styles.textInput,
+								borderColor: errors.email ? "#FF0000" : "#929292",
+							}}
 							onBlur={onBlur}
 							onChangeText={(value) => onChange(value)}
 							value={value}
-							placeholder="Email"
-							placeholderTextColor="#A5A5A5"
+							placeholder={
+								errors.email ? String(errors.email.message) : "Email"
+							}
+							placeholderTextColor={
+								errors.email ? "rgba(255, 0, 0, 0.6)" : "#A5A5A5"
+							}
 						/>
-						{errors.email && (
-							<Text style={styles.errorText}>
-								{String(errors.email.message)}
-							</Text>
-						)}
 					</View>
 				)}
 				name="email"
@@ -58,31 +108,37 @@ const LoginForm = () => {
 				render={({ field: { onChange, onBlur, value } }) => (
 					<View style={styles.inputContainer}>
 						<TextInput
-							style={styles.textInput}
+							style={{
+								...styles.textInput,
+								borderColor: errors.password ? "#FF0000" : "#929292",
+							}}
 							onBlur={onBlur}
 							onChangeText={(value) => onChange(value)}
 							value={value}
-							placeholder="Password"
-							placeholderTextColor="#A5A5A5"
+							placeholder={
+								errors.password ? String(errors.password.message) : "Password"
+							}
+							placeholderTextColor={
+								errors.password ? "rgba(255, 0, 0, 0.6)" : "#A5A5A5"
+							}
 							secureTextEntry
 						/>
-						{errors.password && (
-							<Text style={styles.errorText}>
-								{String(errors.password.message)}
-							</Text>
-						)}
 					</View>
 				)}
 				name="password"
 				defaultValue=""
 			/>
 
-			<TouchableOpacity
-				onPress={handleSubmit(onSubmit)}
-				style={styles.buttonContainer}
-			>
-				<Text style={styles.buttonText}>Login</Text>
-			</TouchableOpacity>
+			{
+				loading
+					? <ActivityIndicator />
+					: <TouchableOpacity
+						style={styles.buttonContainer}
+						onPress={handleSubmit(onSubmit, onError)}
+					>
+						<Text style={styles.buttonText}>Login</Text>
+					</TouchableOpacity>
+			}
 		</View>
 	);
 };
@@ -96,8 +152,8 @@ const styles = StyleSheet.create({
 	},
 	textInput: {
 		width: "100%",
+		height: 50,
 		padding: 10,
-		borderColor: "#929292",
 		borderWidth: 1,
 		borderRadius: 10,
 	},
